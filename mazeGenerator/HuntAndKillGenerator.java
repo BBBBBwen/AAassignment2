@@ -79,16 +79,8 @@ public class HuntAndKillGenerator implements MazeGenerator {
 	}
 
 	private void carve(Cell cell, int direction) {
-		if(cell.wall[direction] == null) {
-			System.out.println("cell.wall[direction] : " + cell.r + " : " + cell.c + " : " + direction);
-		} else if(cell.neigh[direction] == null) {
-			System.out.println("cell.neigh[direction] : " + cell.r + " : " + cell.c + " : " + direction);
-		} else if(cell.neigh[direction].wall[Maze.oppoDir[direction]] == null) {
-			System.out.println("cell.neigh[direction].wall[Maze.oppoDir[direction]] : " + cell.r + " : " + cell.c + " : " + direction);
-		}else{
-			cell.wall[direction].present = false;
-			cell.neigh[direction].wall[Maze.oppoDir[direction]].present = false;
-		}
+		cell.wall[direction].present = false;
+		cell.neigh[direction].wall[Maze.oppoDir[direction]].present = false;
 	}
 
 	private void tunnelMazeGenerator(Maze maze) {
