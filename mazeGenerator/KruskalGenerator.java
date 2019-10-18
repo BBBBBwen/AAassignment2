@@ -6,7 +6,7 @@ import java.util.*;
 public class KruskalGenerator implements MazeGenerator {
 	ArrayList<Edge> edges = new ArrayList<>();
 	private int[][] matrix;
-	private Integer[] direction = new Integer[] { 0, 2, 3, 5 };
+	private Integer[] direction = new Integer[] { Maze.EAST, Maze.NORTH, Maze.WEST, Maze.SOUTH };
 
 	@Override
 	public void generateMaze(Maze maze) {

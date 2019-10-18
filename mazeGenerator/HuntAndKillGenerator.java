@@ -8,7 +8,7 @@ public class HuntAndKillGenerator implements MazeGenerator {
 	private Random rand = new Random();
 	private int randC;
 	private int randR;
-	private Integer[] array = new Integer[] { 0, 2, 3, 5 };
+	private Integer[] array = new Integer[] { Maze.EAST, Maze.NORTH, Maze.WEST, Maze.SOUTH };
 	private List<Integer> direction = Arrays.asList(array);
 
 	@Override
