@@ -12,10 +12,16 @@ public class KruskalGenerator implements MazeGenerator {
 	public void generateMaze(Maze maze) {
 		matrix = new int[maze.sizeR][maze.sizeC];
 		int count = 0;
-		for(int i = 0; i < maze.sizeR; ++i)
-			for(int j = 0; j < maze.sizeC; ++j)
+		for(int i = 0; i < maze.sizeR; ++i) {
+			for(int j = 0; j < maze.sizeC; ++j) {
 				matrix[i][j] = ++count;
-		printMatrix();
+				if(maze.map[i][j].tunnelTo != null) {
+					int tunnelRow = maze.map[i][j].tunnelTo.r;
+					int tunnelCol = maze.map[i][j].tunnelTo.c;
+					matrix[i][j] = matrix[tunnelRow][tunnelCol] = count;
+				}
+			}
+		}
 		mazeGenerator(maze);
 	} // end of generateMaze()
 
@@ -40,7 +46,6 @@ public class KruskalGenerator implements MazeGenerator {
 				if(temp.dir != -1) carve(maze.map[temp.row][temp.col], temp.dir);
 				changeParent(maze, temp, neighbor.r, neighbor.c);
 			}
-			printMatrix();
 		}
 	}
 
@@ -56,9 +61,6 @@ public class KruskalGenerator implements MazeGenerator {
 					if(maze.map[i][j].neigh[d] != null) {
 						addEgde(i, j, d);
 					}
-				}
-				if(maze.map[i][j].tunnelTo != null) {
-					addEgde(i, j, -1);
 				}
 			}
 		}
