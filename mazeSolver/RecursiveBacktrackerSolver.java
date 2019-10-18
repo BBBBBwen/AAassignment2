@@ -11,46 +11,48 @@ public class RecursiveBacktrackerSolver implements MazeSolver {
 	private Integer[] array = new Integer[] { Maze.EAST, Maze.NORTH, Maze.WEST, Maze.SOUTH };
 	private List<Integer> direction = Arrays.asList(array);
 	private boolean solved = false;
-	private int cellsExplored = 0;
+	private int cellsExplored = 1;
 
 	@Override
 	public void solveMaze(Maze maze) {
 		visited = new boolean[maze.sizeR][maze.sizeC];
 		Collections.shuffle(direction);
 		Stack<Integer> step = new Stack<>();
-		int            r = maze.entrance.r;
-		int            c = maze.entrance.c;
+		Cell           currentCell = maze.map[maze.entrance.r][maze.entrance.c];
+		visited[maze.entrance.r][maze.entrance.c] = true;
 
-		while(!isOver(maze)) {
+		while(!isOver(currentCell, maze)) {
 			boolean deadEnd = false;
-			do {
-				Collections.shuffle(direction);
-				visited[r][c] = true;
-				deadEnd = true;
 
-				for(int k = 0; k < 4; ++k) {
-					int row = r + Maze.deltaR[direction.get(k)];
-					int col = c + Maze.deltaC[direction.get(k)];
-					if(checkBound(row, col, maze)) {
-						if(!visited[row][col]) {
-							if(!maze.map[r][c].wall[direction.get(k)].present) {
-								r += Maze.deltaR[direction.get(k)];
-								c += Maze.deltaC[direction.get(k)];
-								System.out.println("go to " + r + " : " + c);
-								step.push(direction.get(k));
-								k = 4;
-								deadEnd = false;
-								++cellsExplored;
-							}
+			while(!deadEnd) {
+				Collections.shuffle(direction);
+				deadEnd = true;
+				boolean hasTunnel = currentCell.tunnelTo != null;
+				if(hasTunnel && !visited[currentCell.tunnelTo.r][currentCell.tunnelTo.c]) {
+					currentCell = currentCell.tunnelTo;
+					step.push(-1);
+					deadEnd = false;
+					++cellsExplored;
+				} else {
+					for(int k = 0; k < 4; ++k) {
+						Cell neighbor = currentCell.neigh[direction.get(k)];
+						if(isVisitable(currentCell, neighbor, direction.get(k))) {
+							currentCell = neighbor;
+							step.push(direction.get(k));
+							deadEnd = false;
+							++cellsExplored;
+							break;
 						}
 					}
 				}
-			} while(!deadEnd);
 
-			if(!isOver(maze)) {
-				Cell curCel = backTracking(maze.map[r][c], maze, step);
-				r = curCel.r;
-				c = curCel.c;
+				maze.drawFtPrt(currentCell);
+				visited[currentCell.r][currentCell.c] = true;
+				if(isOver(currentCell, maze)) deadEnd = true;
+			}
+
+			if(!isOver(currentCell, maze)) {
+				currentCell = backTracking(currentCell, maze, step);
 			}
 		}
 	} // end of solveMaze()
@@ -61,14 +63,12 @@ public class RecursiveBacktrackerSolver implements MazeSolver {
 		int     c = deadEnd.c;
 
 		while(!stop && !stack.isEmpty()) {
-			System.out.println("backTracking");
-
 			if(moveable(r, c, maze))
 				stop = true;
 			else {
 				int dir = stack.pop();
-				r += Maze.deltaR[Maze.oppoDir[dir]];
-				c += Maze.deltaC[Maze.oppoDir[dir]];
+				r = dir == -1 ? maze.map[r][c].tunnelTo.r : Maze.deltaR[Maze.oppoDir[dir]] + r;
+				c = dir == -1 ? maze.map[r][c].tunnelTo.c :  Maze.deltaC[Maze.oppoDir[dir]] + c;
 			}
 		}
 		return maze.map[r][c];
@@ -85,19 +85,11 @@ public class RecursiveBacktrackerSolver implements MazeSolver {
 	}
 
 	private boolean isVisitable(Cell curr, Cell des, int dir) {
-		return !curr.wall[dir].present && !visited[des.r][des.c];
+		return des != null && !curr.wall[dir].present && !visited[des.r][des.c];
 	}
 
-	private boolean traceable(Cell curr, Cell des, int dir) {
-		return !curr.wall[dir].present && visited[des.r][des.c];
-	}
-
-	private boolean isOver(Maze maze) {
-		return solved = visited[maze.exit.r][maze.exit.c];
-	}
-
-	private boolean checkBound(int r, int c, Maze maze) {
-		return r >= 0 && r < maze.sizeR && c >= 0 && c < maze.sizeC;
+	private boolean isOver(Cell current, Maze maze) {
+		return solved = maze.map[current.r][current.c] == maze.map[maze.exit.r][maze.exit.c];
 	}
 
 	@Override
