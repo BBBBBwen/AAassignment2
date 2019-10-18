@@ -15,10 +15,10 @@ public class HuntAndKillGenerator implements MazeGenerator {
 	public void generateMaze(Maze maze) {
 		randR = rand.nextInt(maze.sizeR);
 		randC = rand.nextInt(maze.sizeC);
-		normalMazeGenerator(maze);
+		mazeGenerator(maze);
 	} // end of generateMaze()
 
-	private void normalMazeGenerator(Maze maze) {
+	private void mazeGenerator(Maze maze) {
 		boolean[][] visited = new boolean[maze.sizeR][maze.sizeC];
 		int         r = randR;
 		int         c = randC;
