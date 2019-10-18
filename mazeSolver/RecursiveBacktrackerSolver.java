@@ -6,11 +6,9 @@ import maze.Maze;
  * Implements the recursive backtracking maze solving algorithm.
  */
 public class RecursiveBacktrackerSolver implements MazeSolver {
-
 	@Override
 	public void solveMaze(Maze maze) {
 		// TODO Auto-generated method stub
-
 	} // end of solveMaze()
 
 
@@ -26,5 +24,4 @@ public class RecursiveBacktrackerSolver implements MazeSolver {
 		// TODO Auto-generated method stub
 		return 0;
 	} // end of cellsExplored()
-
-} // end of class RecursiveBackTrackerSolver
+}         // end of class RecursiveBackTrackerSolver
