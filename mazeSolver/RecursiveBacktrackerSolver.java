@@ -12,6 +12,7 @@ public class RecursiveBacktrackerSolver implements MazeSolver {
 	private List<Integer> direction = Arrays.asList(array);
 	private boolean solved = false;
 	private int cellsExplored = 1;
+	private final static int TUNNEL = -1;
 
 	@Override
 	public void solveMaze(Maze maze) {
@@ -27,20 +28,18 @@ public class RecursiveBacktrackerSolver implements MazeSolver {
 			while(!deadEnd) {
 				Collections.shuffle(direction);
 				deadEnd = true;
-				boolean hasTunnel = currentCell.tunnelTo != null;
-				if(hasTunnel && !visited[currentCell.tunnelTo.r][currentCell.tunnelTo.c]) {
-					currentCell = currentCell.tunnelTo;
-					step.push(-1);
+				Cell neighbor = currentCell.tunnelTo;
+				if(neighbor != null && !visited[neighbor.r][neighbor.c]) {
+					currentCell = moveTo(neighbor);
+					step.push(TUNNEL);
 					deadEnd = false;
-					++cellsExplored;
 				} else {
 					for(int k = 0; k < 4; ++k) {
-						Cell neighbor = currentCell.neigh[direction.get(k)];
+						neighbor = currentCell.neigh[direction.get(k)];
 						if(isVisitable(currentCell, neighbor, direction.get(k))) {
-							currentCell = neighbor;
+							currentCell = moveTo(neighbor);
 							step.push(direction.get(k));
 							deadEnd = false;
-							++cellsExplored;
 							break;
 						}
 					}
@@ -57,21 +56,24 @@ public class RecursiveBacktrackerSolver implements MazeSolver {
 		}
 	} // end of solveMaze()
 
-	private Cell backTracking(Cell deadEnd, Maze maze, Stack<Integer> stack) {
+	private Cell moveTo(Cell to) {
+		++cellsExplored;
+		return to;
+	}
+
+	private Cell backTracking(Cell currentCell, Maze maze, Stack<Integer> stack) {
 		boolean stop = false;
-		int     r = deadEnd.r;
-		int     c = deadEnd.c;
 
 		while(!stop && !stack.isEmpty()) {
-			if(moveable(r, c, maze))
+			if(moveable(currentCell.r, currentCell.c, maze))
 				stop = true;
 			else {
 				int dir = stack.pop();
-				r = dir == -1 ? maze.map[r][c].tunnelTo.r : Maze.deltaR[Maze.oppoDir[dir]] + r;
-				c = dir == -1 ? maze.map[r][c].tunnelTo.c :  Maze.deltaC[Maze.oppoDir[dir]] + c;
+				currentCell = dir == TUNNEL ? currentCell.tunnelTo : currentCell.neigh[Maze.oppoDir[dir]];
 			}
 		}
-		return maze.map[r][c];
+
+		return currentCell;
 	}
 
 	private boolean moveable(int r, int c, Maze maze) {
