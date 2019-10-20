@@ -27,7 +27,7 @@ public class HuntAndKillGenerator implements MazeGenerator {
 		for(int i = 0; i < maze.sizeR; ++i) {
 			for(int j = 0; j < maze.sizeC; ++j) {
 				if(!visited[i][j]) {
-					Cell neighbor = maze.map[i][j].tunnelTo;
+					Cell neighbor = maze.map[i][j].tunnelTo;//neighbor is next available cell
 					if(neighbor != null && visited[neighbor.r][neighbor.c]) {
 						currentCell = maze.map[i][j];
 						return currentCell;
@@ -47,14 +47,15 @@ public class HuntAndKillGenerator implements MazeGenerator {
 		return null;
 	}
 
-	//start at an unvisited cell and start carving
+	//start at an unvisited cell and find an unvisied neighbor in random direction
 	private void kill(Maze maze, boolean[][] visited, Cell currentCell) {
 		boolean kill = true;
 		do {
 			Collections.shuffle(direction);
 			kill = false;
 			visited[currentCell.r][currentCell.c] = true;
-			Cell neighbor = currentCell.tunnelTo;
+			Cell neighbor = currentCell.tunnelTo;//neighbor is next available cell
+
 			if(neighbor != null && !visited[neighbor.r][neighbor.c]) {
 				currentCell = neighbor;
 				kill = true;

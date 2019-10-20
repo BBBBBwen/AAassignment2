@@ -19,6 +19,7 @@ public class RecursiveBacktrackerSolver implements MazeSolver {
 		move(maze.entrance, maze);
 	} // end of solveMaze()
 
+	//move to the next validate cell
 	private void move(Cell cell, Maze maze) {
 		if(cell == maze.exit) {
 			solved = true;
@@ -36,16 +37,19 @@ public class RecursiveBacktrackerSolver implements MazeSolver {
 		}
 	}
 
+	//check the next cell is moveable
 	private boolean isValid(Cell cell, int dir) {
 		Cell neigh = cell.neigh[dir];
 		return neigh != null && !visited[neigh.r][neigh.c] && !cell.wall[dir].present;
 	}
 
+	//check if tunnel is exist and moveable
 	private boolean isTunnel(Cell cell) {
 		Cell tunnel = cell.tunnelTo;
 		return tunnel != null && !visited[tunnel.r][tunnel.c];
 	}
 
+	//check if the current cell is a deadend
 	private boolean reachEnd(Cell cell, Maze maze) {
 		Cell tunnel = cell.tunnelTo;
 		if(tunnel != null && visited[tunnel.r][tunnel.c])
@@ -62,7 +66,7 @@ public class RecursiveBacktrackerSolver implements MazeSolver {
 	@Override
 	public boolean isSolved() {
 		return solved;
-	} // end if isSolved()
+	} // end of isSolved()
 
 
 	@Override

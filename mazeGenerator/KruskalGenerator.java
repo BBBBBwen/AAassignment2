@@ -12,6 +12,8 @@ public class KruskalGenerator implements MazeGenerator {
 	public void generateMaze(Maze maze) {
 		matrix = new int[maze.sizeR][maze.sizeC];
 		int count = 0;
+
+		//Initialize parent matrix according to the number of cells
 		for(int i = 0; i < maze.sizeR; ++i) {
 			for(int j = 0; j < maze.sizeC; ++j) {
 				matrix[i][j] = ++count;
@@ -38,11 +40,13 @@ public class KruskalGenerator implements MazeGenerator {
 		}
 	}
 
+	//add edge to egde list
 	private void addEgde(int row, int col, int direction) {
 		Edge edge = new Edge(row, col, direction);
 		edges.add(edge);
 	}
 
+	//add all edge to edge list
 	private void makeSet(Maze maze) {
 		for(int i = 0; i < matrix.length; ++i) {
 			for(int j = 0; j < matrix[i].length; ++j) {
@@ -55,6 +59,7 @@ public class KruskalGenerator implements MazeGenerator {
 		}
 	}
 
+	//change root parent of neighbor to the root parent of current cell
 	private void changeParent(Maze maze, Edge edge, int neighbourRow, int neighbourCol) {
 		int current = matrix[edge.row][edge.col];
 		int neighbor = matrix[neighbourRow][neighbourCol];
@@ -64,6 +69,7 @@ public class KruskalGenerator implements MazeGenerator {
 					matrix[i][j] = current;
 	}
 
+	//remove walls between cells
 	private void carve(Cell cell, int direction) {
 		cell.wall[direction].present = false;
 		cell.neigh[direction].wall[Maze.oppoDir[direction]].present = false;
