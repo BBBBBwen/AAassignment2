@@ -6,8 +6,7 @@ import java.util.*;
 
 public class HuntAndKillGenerator implements MazeGenerator {
 	private Random rand = new Random();
-	private Integer[] array = new Integer[] { Maze.EAST, Maze.NORTH, Maze.WEST, Maze.SOUTH };
-	private List<Integer> direction = Arrays.asList(array);
+	private List<Integer> direction = Arrays.asList(Maze.EAST, Maze.NORTHEAST, Maze.NORTH, Maze.WEST, Maze.SOUTHWEST, Maze.SOUTH);
 
 	@Override
 	public void generateMaze(Maze maze) {
@@ -33,7 +32,7 @@ public class HuntAndKillGenerator implements MazeGenerator {
 						currentCell = maze.map[i][j];
 						return currentCell;
 					} else {
-						for(int k = 0; k < 4; ++k) {
+						for(int k = 0; k < Maze.NUM_DIR; ++k) {
 							neighbor = maze.map[i][j].neigh[direction.get(k)];
 							if(neighbor != null && visited[neighbor.r][neighbor.c]) {
 								currentCell = maze.map[i][j];
@@ -60,7 +59,7 @@ public class HuntAndKillGenerator implements MazeGenerator {
 				currentCell = neighbor;
 				kill = true;
 			} else {
-				for(int k = 0; k < 4; ++k) {
+				for(int k = 0; k < Maze.NUM_DIR; ++k) {
 					neighbor = currentCell.neigh[direction.get(k)];
 					if(neighbor != null && !visited[neighbor.r][neighbor.c]) {
 						carve(currentCell, direction.get(k));
