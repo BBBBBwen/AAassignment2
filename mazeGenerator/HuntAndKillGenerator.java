@@ -1,7 +1,6 @@
 package mazeGenerator;
 
 import maze.*;
-import java.util.Random;
 import java.util.*;
 
 public class HuntAndKillGenerator implements MazeGenerator {
